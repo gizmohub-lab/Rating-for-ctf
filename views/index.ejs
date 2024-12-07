@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Font Awesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="icon" type="image/png" sizes="10x10" href="/images/logo.png">
+
+
+ 
+  <title>Rate NLF</title>
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 20px;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    form {
+      margin-bottom: 30px;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    /* Star Rating Styles */
+    .star-rating {
+      display: flex;
+      justify-content: flex-start;
+      font-size: 30px;
+    }
+
+    .star {
+      cursor: pointer;
+      color: #ccc; /* Default gray for stars */
+      transition: color 0.2s ease-in-out;
+    }
+
+    .star.filled {
+      color: gold; /* Gold for selected stars */
+    }
+
+    textarea {
+      border: 1px solid #ccc;
+      padding: 10px;
+      width: 100%;
+      border-radius: 5px;
+    }
+
+    button {
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Please rate the overall ambiance</h1>
+  
+  <form action="/submit-rating" method="POST" id="ratingForm">
+    <label for="stars">Rate Us</label>
+    <div class="star-rating" id="starRating">
+      <span class="star" data-value="1">&#9733;</span>
+      <span class="star" data-value="2">&#9733;</span>
+      <span class="star" data-value="3">&#9733;</span>
+      <span class="star" data-value="4">&#9733;</span>
+      <span class="star" data-value="5">&#9733;</span>
+    </div>
+    <input type="hidden" id="ratingInput" name="stars" value="0">
+    <br><br>
+
+    <label for="description">Let us know what you think</label>
+    <textarea style="font-family: 'Poppins' ,sans-serif;" id="description" name="description" rows="4" required></textarea>
+    <br><br>
+
+    <button type="submit">Submit Rating</button>
+  </form>
+
+  <script>
+    // JavaScript for interactive star rating
+    const stars = document.querySelectorAll('.star');
+    const ratingInput = document.getElementById('ratingInput');
+    const form = document.getElementById('ratingForm');
+
+    stars.forEach((star, index) => {
+      // Handle hover effect
+      star.addEventListener('mouseover', () => {
+        resetStars();
+        fillStars(index);
+      });
+
+      // Handle click (select rating)
+      star.addEventListener('click', () => {
+        ratingInput.value = star.dataset.value; // Set hidden input value
+        resetStars();
+        fillStars(index);
+      });
+
+      // Reset stars on mouseout
+      star.addEventListener('mouseout', () => {
+        resetStars();
+        const selectedRating = ratingInput.value - 1;
+        if (selectedRating >= 0) fillStars(selectedRating);
+      });
+    });
+
+    // Fill stars up to the given index
+    function fillStars(index) {
+      for (let i = 0; i <= index; i++) {
+        stars[i].classList.add('filled');
+      }
+    }
+
+    // Reset all stars
+    function resetStars() {
+      stars.forEach(star => star.classList.remove('filled'));
+    }
+
+    // Add event listener for form submission
+    form.addEventListener('submit', (event) => {
+      event.preventDefault(); // Prevent form submission to show confirmation first
+
+      const ratingValue = ratingInput.value;
+      const description = document.getElementById('description').value;
+
+      // If no rating is selected
+      if (ratingValue === "0") {
+        alert("Please select a rating before submitting.");
+        return;
+      }
+
+      // Confirmation before submitting the form
+      const confirmation = window.confirm(`You rated this as ${ratingValue} star(s). Do you want to submit this feedback?\n\nDescription: ${description}`);
+
+      if (confirmation) {
+        // If user confirms, submit the form
+        form.submit();
+      }
+    });
+  </script>
+</body>
+</html>
