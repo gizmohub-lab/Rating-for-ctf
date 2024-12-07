@@ -6,7 +6,10 @@ require('dotenv').config(); // Load environment variables
 
 // Initialize app
 const app = express();
+app.set('view engine', 'ejs');
 
+// Ensure views directory is correctly set
+app.set('views', __dirname + '/views');
 // Connect to MongoDB
 const mongoURI = process.env.MONGO_URI || '';
 mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
